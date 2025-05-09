@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collision Simulation</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="collision.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Collision Simulation</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gravity.html">Gravity</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <canvas id="collisionCanvas"></canvas>
+        <div id="settingsPanel">
+            <h2>Settings</h2>
+            <label for="radius">Radius:</label>
+            <input type="number" id="radius" min="1" max="100" value="10">
+            <label for="xCoord">X Coordinate:</label>
+            <input type="number" id="xCoord" min="0" max="500" value="50">
+            <label for="yCoord">Y Coordinate:</label>
+            <input type="number" id="yCoord" min="0" max="500" value="50">
+            <label for="mass">Mass:</label>
+            <input type="number" id="mass" min="1" max="100" value="10">
+            <button id="addBall">Add Ball</button>
+            <button id="resetCanvas">Reset</button>
+        </div>
+    </main>
+</body>
+</html>

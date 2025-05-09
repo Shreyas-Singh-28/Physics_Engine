@@ -1,22 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Physics Fundamentals</title>
-    <style>
-        canvas { background: #f0f0f0; display: block; margin: 0 auto; }
-        .controls { padding: 20px; text-align: center; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Engine</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1 style="text-align: center;">Physics Fundamentals</h1>
-    <div class="controls">
-        <button id="gravityBtn">Toggle Gravity</button>
-        <button id="collisionBtn">Add Collision</button>
-        <input type="range" id="frictionSlider" min="0" max="1" step="0.1">
-        <label for="frictionSlider">Friction</label>
-    </div>
-    <canvas id="physicsCanvas"></canvas>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
-    <script src="main.js"></script>
+    <header>
+        <h1>Physics Engine</h1>
+        <nav>
+            <ul>
+                <li><a href="collision.html">Collision</a></li>
+                <li><a href="gravity.html">Gravity</a></li>
+            </ul>
+        </nav>
+    </header>
 </body>
 </html>
