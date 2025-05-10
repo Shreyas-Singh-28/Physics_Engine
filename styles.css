@@ -40,15 +40,20 @@ nav ul li a:hover {
 
 main {
     display: flex;
-    justify-content: space-between;
-    padding: 1rem;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem 0;
 }
 
 canvas {
     border: 2px solid #333;
     flex: 1;
     margin-right: 1rem;
-
+    margin-left: 2rem;
+    width: 800px;
+    height: 500px;
+    box-sizing: border-box;
 }
 
 #settingsPanel {
@@ -56,11 +61,13 @@ canvas {
     padding: 1rem;
     width: 300px;
     background-color: #fff;
+    margin-right: 2rem;
 }
 
 #collisionCanvas, #gravityCanvas{
     height: 500px;
-    width: 600px;
+    width: 800px !important;
+    height: 500px !important;
 }
 
 input[type="number"], button {
@@ -86,4 +93,65 @@ button {
 
 button:active {
     background-color: #555;
+}
+
+.home-section {
+    display: inline-block;
+    margin: 2rem;
+    text-align: center;
+    border: 2px solid #333;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s, transform 0.2s;
+    width: 320px;
+}
+
+.home-section:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    transform: scale(1.03);
+}
+
+.home-thumbnail {
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #ccc;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 0.5rem;
+}
+
+.home-section h2 {
+    margin: 1rem 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.home-section a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+#editDeleteMenu {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-radius: 6px;
+    min-width: 120px;
+    display: none;
+}
+#editDeleteMenu button {
+    display: block;
+    width: 100%;
+    margin: 0.25rem 0;
+    border: none;
+    background: #333;
+    color: #fff;
+    border-radius: 4px;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#editDeleteMenu button:hover {
+    background: #555;
 }

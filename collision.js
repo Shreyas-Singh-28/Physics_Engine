@@ -1,9 +1,13 @@
 const canvas = document.getElementById('collisionCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = 800;
-canvas.height = 600;
+canvas.height = 500;
 
-let balls = [];
+let balls = [
+    new Ball(150, 200, 30, 20),
+    new Ball(400, 300, 40, 30),
+    new Ball(600, 100, 20, 10)
+];
 
 function Ball(x, y, radius, mass) {
     this.x = x;
@@ -36,53 +40,80 @@ Ball.prototype.update = function() {
     }
 };
 
-// Add collision simulation logic
+// Mass-based collision response (fix for direction and constant speed for controlled ball)
 Ball.prototype.checkCollision = function(other) {
-    const dx = this.x - other.x;
-    const dy = this.y - other.y;
+    const dx = other.x - this.x;
+    const dy = other.y - this.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-
     if (distance < this.radius + other.radius) {
-        const angle = Math.atan2(dy, dx);
-        const sin = Math.sin(angle);
-        const cos = Math.cos(angle);
-
-        const v1 = { x: this.vx * cos + this.vy * sin, y: this.vy * cos - this.vx * sin };
-        const v2 = { x: other.vx * cos + other.vy * sin, y: other.vy * cos - other.vx * sin };
-
-        const temp = v1.x;
-        v1.x = v2.x;
-        v2.x = temp;
-
-        this.vx = v1.x * cos - v1.y * sin;
-        this.vy = v1.y * cos + v1.x * sin;
-        other.vx = v2.x * cos - v2.y * sin;
-        other.vy = v2.y * cos + v2.x * sin;
+        // Calculate normal and tangent vectors
+        const nx = dx / distance;
+        const ny = dy / distance;
+        const tx = -ny;
+        const ty = nx;
+        // Project velocities onto the normal and tangent directions
+        const v1n = this.vx * nx + this.vy * ny;
+        const v1t = this.vx * tx + this.vy * ty;
+        const v2n = other.vx * nx + other.vy * ny;
+        const v2t = other.vx * tx + other.vy * ty;
+        // Compute new normal velocities using 1D elastic collision equations
+        const m1 = this.mass;
+        const m2 = other.mass;
+        const v1nAfter = (v1n * (m1 - m2) + 2 * m2 * v2n) / (m1 + m2);
+        const v2nAfter = (v2n * (m2 - m1) + 2 * m1 * v1n) / (m1 + m2);
+        // Convert scalar normal and tangential velocities into vectors
+        this.vx = v1nAfter * nx + v1t * tx;
+        this.vy = v1nAfter * ny + v1t * ty;
+        other.vx = v2nAfter * nx + v2t * tx;
+        other.vy = v2nAfter * ny + v2t * ty;
+        // Separate overlapping balls
+        const overlap = 0.5 * (this.radius + other.radius - distance + 1);
+        this.x -= overlap * nx;
+        this.y -= overlap * ny;
+        other.x += overlap * nx;
+        other.y += overlap * ny;
     }
 };
 
 // Allow user to control a ball
 let selectedBall = null;
+let controlledBall = null;
 
 canvas.addEventListener('click', (e) => {
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-
     selectedBall = balls.find(ball => {
         const dx = ball.x - mouseX;
         const dy = ball.y - mouseY;
         return Math.sqrt(dx * dx + dy * dy) <= ball.radius;
     });
+    if (selectedBall) {
+        showEditDeleteMenu(selectedBall, mouseX, mouseY);
+    } else {
+        hideEditDeleteMenu();
+    }
 });
 
 document.addEventListener('keydown', (e) => {
-    if (selectedBall) {
+    if (controlledBall) {
         const speed = 5;
-        if (e.key === 'ArrowUp') selectedBall.vy -= speed;
-        if (e.key === 'ArrowDown') selectedBall.vy += speed;
-        if (e.key === 'ArrowLeft') selectedBall.vx -= speed;
-        if (e.key === 'ArrowRight') selectedBall.vx += speed;
+        if (e.key === 'ArrowUp') {
+            controlledBall.vx = 0;
+            controlledBall.vy = -speed;
+        }
+        if (e.key === 'ArrowDown') {
+            controlledBall.vx = 0;
+            controlledBall.vy = speed;
+        }
+        if (e.key === 'ArrowLeft') {
+            controlledBall.vx = -speed;
+            controlledBall.vy = 0;
+        }
+        if (e.key === 'ArrowRight') {
+            controlledBall.vx = speed;
+            controlledBall.vy = 0;
+        }
     }
 });
 
@@ -110,12 +141,66 @@ document.getElementById('addBall').addEventListener('click', () => {
     const x = parseInt(document.getElementById('xCoord').value);
     const y = parseInt(document.getElementById('yCoord').value);
     const mass = parseInt(document.getElementById('mass').value);
-
-    balls.push(new Ball(x, y, radius, mass));
+    const newBall = new Ball(x, y, radius, mass);
+    // Set initial constant velocity (to the right)
+    newBall.vx = 5;
+    newBall.vy = 0;
+    balls.push(newBall);
+    controlledBall = newBall;
 });
 
 document.getElementById('resetCanvas').addEventListener('click', () => {
-    balls = [];
+    balls = [
+        new Ball(150, 200, 30, 20),
+        new Ball(400, 300, 40, 30),
+        new Ball(600, 100, 20, 10)
+    ];
+    controlledBall = null;
+    hideEditDeleteMenu();
 });
+
+// Edit/Delete menu logic
+function showEditDeleteMenu(ball, x, y) {
+    let menu = document.getElementById('editDeleteMenu');
+    if (!menu) {
+        menu = document.createElement('div');
+        menu.id = 'editDeleteMenu';
+        menu.style.position = 'absolute';
+        menu.style.background = '#fff';
+        menu.style.border = '1px solid #333';
+        menu.style.padding = '0.5rem';
+        menu.style.zIndex = 1000;
+        menu.innerHTML = `
+            <button id="editBallBtn">Edit</button>
+            <button id="deleteBallBtn">Delete</button>
+            <button id="controlBallBtn">Control</button>
+        `;
+        document.body.appendChild(menu);
+    }
+    menu.style.left = (canvas.offsetLeft + x + 10) + 'px';
+    menu.style.top = (canvas.offsetTop + y + 10) + 'px';
+    menu.style.display = 'block';
+
+    document.getElementById('editBallBtn').onclick = function() {
+        const newRadius = parseInt(prompt('New radius:', ball.radius));
+        const newMass = parseInt(prompt('New mass:', ball.mass));
+        if (!isNaN(newRadius)) ball.radius = newRadius;
+        if (!isNaN(newMass)) ball.mass = newMass;
+        hideEditDeleteMenu();
+    };
+    document.getElementById('deleteBallBtn').onclick = function() {
+        balls = balls.filter(b => b !== ball);
+        hideEditDeleteMenu();
+    };
+    document.getElementById('controlBallBtn').onclick = function() {
+        controlledBall = ball;
+        hideEditDeleteMenu();
+    };
+}
+
+function hideEditDeleteMenu() {
+    const menu = document.getElementById('editDeleteMenu');
+    if (menu) menu.style.display = 'none';
+}
 
 animate();
