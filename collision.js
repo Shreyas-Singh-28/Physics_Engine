@@ -5,7 +5,7 @@ canvas.height = 500;
 
 let balls = [
     new Ball(150, 200, 30, 20),
-    new Ball(400, 300, 40, 30),
+    new Ball(400, 400, 40, 30),
     new Ball(600, 100, 20, 10)
 ];
 
