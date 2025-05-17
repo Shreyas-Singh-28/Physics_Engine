@@ -171,3 +171,12 @@ button:active {
 .home-link:hover {
     background: #555;
 }
+
+.styled-select {
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  background-color: #333;
+}

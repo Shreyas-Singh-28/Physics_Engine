@@ -1,130 +1,105 @@
-// 2D physics for rectangles: allow tilting, falling, and stacking realistically
+// Falling Object Sandbox
 const canvas = document.getElementById('gravityCanvas');
 const ctx = canvas.getContext('2d');
-canvas.width = 800;
+canvas.width = 1100;
 canvas.height = 500;
 
-let rectangles = [];
-const gravity = 0.7;
-const restitution = 0.2; // little bounce
+let objects = [];
+let gravity = 10; // m/s², default
 
-function addPredefinedRectangles() {
-    const baseY = canvas.height;
-    const breadth = 40;
-    const rects = [
-        { length: 160, breadth: breadth, color: '#e67e22' }, // orange
-        { length: 100, breadth: breadth, color: '#27ae60' }  // green
-    ];
-    let y = baseY;
-    for (let i = 0; i < rects.length; i++) {
-        y -= rects[i].breadth;
-        rectangles.push({
-            x: (canvas.width - rects[i].length) / 2,
-            y: y,
-            length: rects[i].length,
-            breadth: rects[i].breadth,
-            angle: 0,
-            vx: 0,
-            vy: 0,
-            omega: 0,
-            color: rects[i].color,
-            isStatic: false
-        });
-    }
+function getSettings() {
+    return {
+        shape: document.getElementById('shapeType').value,
+        gravity: parseFloat(document.getElementById('gravityValue').value),
+        size: parseInt(document.getElementById('objectSize').value)
+    };
 }
 
-function addFallingRectangle(length, breadth) {
-    const minX = canvas.width * 0.25;
-    const maxX = canvas.width * 0.75 - length;
-    const x = Math.random() * (maxX - minX) + minX;
-    rectangles.push({
-        x: x,
-        y: 0,
-        length,
-        breadth,
-        angle: 0,
-        vx: 0,
-        vy: 0,
-        omega: 0,
-        color: '#f39c12',
-        isStatic: false
-    });
-}
-
-document.getElementById('addRect').addEventListener('click', () => {
-    const length = parseInt(document.getElementById('rectLength').value);
-    const breadth = parseInt(document.getElementById('rectBreadth').value);
-    addFallingRectangle(length, breadth);
+document.getElementById('gravityValue').addEventListener('input', function() {
+    gravity = parseFloat(this.value);
 });
 
-function updateRectangles() {
-    for (let i = 0; i < rectangles.length; i++) {
-        const rect = rectangles[i];
-        if (!rect.isStatic) {
-            rect.vy += gravity;
-            rect.x += rect.vx;
-            rect.y += rect.vy;
-            rect.angle += rect.omega;
-            // Floor collision
-            if (rect.y + rect.breadth > canvas.height) {
-                rect.y = canvas.height - rect.breadth;
-                rect.vy *= -restitution;
-                rect.vx *= 0.8;
-                rect.omega *= 0.7;
-                if (Math.abs(rect.vy) < 1) rect.vy = 0;
-                if (Math.abs(rect.vy) === 0) rect.isStatic = true;
+canvas.addEventListener('click', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const { shape, size } = getSettings();
+    if (shape === 'ball') {
+        objects.push({
+            type: 'ball',
+            x: x,
+            y: y,
+            r: size / 2,
+            vx: 0,
+            vy: 0,
+            color: getRandomColor()
+        });
+    } else {
+        objects.push({
+            type: 'square',
+            x: x - size / 2,
+            y: y - size / 2,
+            size: size,
+            vx: 0,
+            vy: 0,
+            color: getRandomColor()
+        });
+    }
+});
+
+document.getElementById('resetBtn').addEventListener('click', function() {
+    objects = [];
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+function getRandomColor() {
+    const colors = [
+        '#8ecae6', '#219ebc', '#023047', '#ffb703', '#fb8500',
+        '#e63946', '#f1faee', '#a8dadc', '#457b9d', '#ff006e',
+        '#8338ec', '#3a86ff', '#ffbe0b', '#ff006e', '#fb5607', '#ffb4a2'
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function updateObjects() {
+    for (let obj of objects) {
+        obj.vy += gravity * 0.05; // simple gravity step
+        obj.y += obj.vy;
+        obj.x += obj.vx;
+        // Floor collision
+        if (obj.type === 'ball') {
+            if (obj.y + obj.r > canvas.height) {
+                obj.y = canvas.height - obj.r;
+                obj.vy *= -0.5;
+                if (Math.abs(obj.vy) < 1) obj.vy = 0;
             }
-            // Rectangle-rectangle collision (AABB, with tilt)
-            for (let j = 0; j < rectangles.length; j++) {
-                if (i !== j) {
-                    const other = rectangles[j];
-                    // Use axis-aligned bounding box for simplicity
-                    if (
-                        rect.x < other.x + other.length &&
-                        rect.x + rect.length > other.x &&
-                        rect.y + rect.breadth > other.y &&
-                        rect.y < other.y + other.breadth &&
-                        rect.vy > 0
-                    ) {
-                        // Only stack if center of mass is supported
-                        const centerX = rect.x + rect.length / 2;
-                        if (centerX > other.x && centerX < other.x + other.length) {
-                            rect.y = other.y - rect.breadth;
-                            rect.vy *= -restitution;
-                            rect.vx *= 0.8;
-                            rect.omega += (Math.random() - 0.5) * 0.1;
-                            if (Math.abs(rect.vy) < 1) rect.vy = 0;
-                            if (Math.abs(rect.vy) === 0) rect.isStatic = true;
-                        } else {
-                            // If not supported, let it rotate and fall off
-                            rect.omega += (centerX < other.x ? -0.05 : 0.05);
-                            rect.vx += (centerX < other.x ? -0.5 : 0.5);
-                        }
-                    }
-                }
+        } else if (obj.type === 'square') {
+            if (obj.y + obj.size > canvas.height) {
+                obj.y = canvas.height - obj.size;
+                obj.vy *= -0.5;
+                if (Math.abs(obj.vy) < 1) obj.vy = 0;
             }
         }
     }
 }
 
-function drawRectangles() {
+function drawObjects() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    rectangles.forEach(rect => {
-        ctx.save();
-        ctx.translate(rect.x + rect.length / 2, rect.y + rect.breadth / 2);
-        ctx.rotate(rect.angle);
-        ctx.fillStyle = rect.color;
-        ctx.fillRect(-rect.length / 2, -rect.breadth / 2, rect.length, rect.breadth);
-        ctx.restore();
-    });
+    for (let obj of objects) {
+        ctx.fillStyle = obj.color;
+        if (obj.type === 'ball') {
+            ctx.beginPath();
+            ctx.arc(obj.x, obj.y, obj.r, 0, 2 * Math.PI);
+            ctx.fill();
+        } else if (obj.type === 'square') {
+            ctx.fillRect(obj.x, obj.y, obj.size, obj.size);
+        }
+    }
 }
 
 function animate() {
-    updateRectangles();
-    drawRectangles();
+    updateObjects();
+    drawObjects();
     requestAnimationFrame(animate);
 }
-
-rectangles = [];
-addPredefinedRectangles();
 animate();
