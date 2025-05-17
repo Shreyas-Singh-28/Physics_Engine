@@ -1,8 +1,9 @@
 window.addEventListener('DOMContentLoaded', function () {
     // Set up canvas
     const canvas = document.getElementById('slingshotCanvas');
-    canvas.width = 1100;
+    canvas.width = 1200;
     canvas.height = 600;
+    
     
     // Create Matter.js engine and renderer
     const Engine = window.Matter.Engine,
@@ -32,7 +33,7 @@ window.addEventListener('DOMContentLoaded', function () {
     });
 
     // Ground
-    const ground = Bodies.rectangle(700, 550, 400, 20, { isStatic: true, render: { fillStyle: '#888' } });
+    const ground = Bodies.rectangle(700, 400, 400, 20, { isStatic: true, render: { fillStyle: '#888' } });
 
     // Slingshot ball
     let ball = Bodies.circle(200, 400, 20, {
@@ -53,10 +54,18 @@ window.addEventListener('DOMContentLoaded', function () {
     });
 
     // Stack of shapes to knock down
+    function getRandomColor() {
+        const colors = [
+            '#8ecae6', '#219ebc', '#023047', '#ffb703', '#fb8500',
+            '#e63946', '#f1faee', '#a8dadc', '#457b9d', '#ff006e',
+            '#8338ec', '#3a86ff', '#ffbe0b', '#ff006e', '#fb5607', '#ffb4a2'
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
     const stack = Composites.stack(600, 100, 5, 6, 0, 0, function (x, y) {
         return Bodies.polygon(x, y, 8, 18, {
             restitution: 0.4,
-            render: { fillStyle: '#8ecae6' }
+            render: { fillStyle: getRandomColor() }
         });
     });
 
