@@ -1,7 +1,7 @@
 window.addEventListener('DOMContentLoaded', function () {
     // Set up canvas
     const canvas = document.getElementById('slingshotCanvas');
-    canvas.width = 1000;
+    canvas.width = 1100;
     canvas.height = 600;
     
     // Create Matter.js engine and renderer
