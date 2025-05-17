@@ -55,11 +55,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
     // Stack of shapes to knock down
     function getRandomColor() {
-        const colors = [
-            '#8ecae6', '#219ebc', '#023047', '#ffb703', '#fb8500',
-            '#e63946', '#f1faee', '#a8dadc', '#457b9d', '#ff006e',
-            '#8338ec', '#3a86ff', '#ffbe0b', '#ff006e', '#fb5607', '#ffb4a2'
-        ];
+        const colors = ['#e63946', '#3a86ff', '#ffbe0b'];
         return colors[Math.floor(Math.random() * colors.length)];
     }
     const stack = Composites.stack(600, 100, 5, 6, 0, 0, function (x, y) {
