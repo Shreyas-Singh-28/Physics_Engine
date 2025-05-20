@@ -2,12 +2,15 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    background: #232729;
+    color: #e0e0e0;
+}
+
+header, main {
+  background: #232729;
 }
 
 header {
-    background: #333;
     color: #fff;
     padding: 1rem 0;
     text-align: center;
@@ -30,7 +33,7 @@ nav ul li {
 }
 
 nav ul li a {
-    color: #fff;
+    color: #e0e0e0;
     text-decoration: none;
 }
 
@@ -47,21 +50,24 @@ main {
 }
 
 canvas {
-    border: 2px solid #333;
+    border: 2px solid #bfa97a;
     flex: 1;
     margin-right: 1rem;
     margin-left: 2rem;
     width: 900px;
     height: 500px;
     box-sizing: border-box;
+    background: #18181d;
 }
 
 #settingsPanel {
-    border: 2px solid #333;
+    border: 1.5px solid #bfa97a;
     padding: 1rem;
     width: 300px;
-    background-color: #fff;
+    background: #232729;
     margin-right: 2rem;
+    border-radius: 10px;
+    color: #e0e0e0;
 }
 
 #collisionCanvas, #gravityCanvas{
@@ -71,12 +77,13 @@ canvas {
 }
 
 input[type="number"], button {
-    border: 2px solid #333;
-    border-radius: 5px;
+    border: 1.5px solid #bfa97a;
+    border-radius: 6px;
     padding: 0.5rem;
     margin: 0.5rem 0;
     font-size: 1rem;
-    background-color: #f9f9f9;
+    background: #18181d;
+    color: #e0e0e0;
     transition: background-color 0.3s, transform 0.2s;
 }
 
@@ -88,21 +95,26 @@ input[type="number"]:focus, button:hover {
 button {
     cursor: pointer;
     color: #fff;
-    background-color: #333;
+    background: #e63946;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    transition: background 0.2s;
 }
 
-button:active {
-    background-color: #555;
+button:hover {
+    background: #b81d24;
 }
 
 .home-section {
     display: inline-block;
     margin: 2rem;
     text-align: center;
-    border: 2px solid #333;
-    border-radius: 10px;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 2px solid #bfa97a;
+    border-radius: 12px;
+    background: #232729;
+    box-shadow: 0 2px 12px #18181d44;
     transition: box-shadow 0.3s, transform 0.2s;
     width: 320px;
 }
@@ -116,15 +128,15 @@ button:active {
     width: 300px;
     height: 200px;
     object-fit: cover;
-    border-bottom: 1px solid #ccc;
-    border-radius: 10px 10px 0 0;
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid #bfa97a;
     margin-bottom: 0.5rem;
 }
 
 .home-section h2 {
     margin: 1rem 0;
     font-size: 1.5rem;
-    color: #333;
+    color: #e0e0e0;
 }
 
 .home-section a {
@@ -160,7 +172,7 @@ button:active {
     display: block;
     margin: 0.5rem auto 0 auto;
     width: fit-content;
-    color: #fff;
+    color: #e0e0e0;
     background: #333;
     padding: 0.3rem 1.2rem;
     border-radius: 5px;
@@ -175,8 +187,17 @@ button:active {
 .styled-select {
   padding: 6px 12px;
   border-radius: 8px;
-  color: #fff;
+  color: #e0e0e0;
   font-size: 1rem;
   margin-bottom: 8px;
-  background-color: #333;
+  background: #18181d;
+  border: 1.5px solid #bfa97a;
+}
+
+label {
+  color: #e0e0e0;
+}
+
+h1, h2, h3 {
+  color: #e0e0e0;
 }

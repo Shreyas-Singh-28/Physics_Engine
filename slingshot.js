@@ -28,7 +28,7 @@ window.addEventListener('DOMContentLoaded', function () {
             width: canvas.width,
             height: canvas.height,
             wireframes: false,
-            background: '#f0f0f0',
+            background: 'rgb(24, 24, 29)',
         }
     });
 
