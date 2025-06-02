@@ -109,7 +109,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Update detectCollisions to use the new method
 function detectCollisions() {
     for (let i = 0; i < balls.length; i++) {
         for (let j = i + 1; j < balls.length; j++) {
@@ -134,7 +133,6 @@ document.getElementById('addBall').addEventListener('click', () => {
     const y = parseInt(document.getElementById('yCoord').value);
     const mass = parseInt(document.getElementById('mass').value);
     const newBall = new Ball(x, y, radius, mass);
-    // Set initial constant velocity (to the right)
     newBall.vx = 5;
     newBall.vy = 0;
     balls.push(newBall);
@@ -151,7 +149,6 @@ document.getElementById('resetCanvas').addEventListener('click', () => {
     hideEditDeleteMenu();
 });
 
-// Edit/Delete menu logic
 function showEditDeleteMenu(ball, x, y) {
     let menu = document.getElementById('editDeleteMenu');
     if (!menu) {
