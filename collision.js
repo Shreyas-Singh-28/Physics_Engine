@@ -31,7 +31,6 @@ Ball.prototype.update = function() {
     this.x += this.vx;
     this.y += this.vy;
 
-    // Wall collision
     if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
         this.vx *= -1;
     }
@@ -40,33 +39,27 @@ Ball.prototype.update = function() {
     }
 };
 
-// Mass-based collision response (fix for direction and constant speed for controlled ball)
 Ball.prototype.checkCollision = function(other) {
     const dx = other.x - this.x;
     const dy = other.y - this.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
     if (distance < this.radius + other.radius) {
-        // Calculate normal and tangent vectors
         const nx = dx / distance;
         const ny = dy / distance;
         const tx = -ny;
         const ty = nx;
-        // Project velocities onto the normal and tangent directions
         const v1n = this.vx * nx + this.vy * ny;
         const v1t = this.vx * tx + this.vy * ty;
         const v2n = other.vx * nx + other.vy * ny;
         const v2t = other.vx * tx + other.vy * ty;
-        // Compute new normal velocities using 1D elastic collision equations
         const m1 = this.mass;
         const m2 = other.mass;
         const v1nAfter = (v1n * (m1 - m2) + 2 * m2 * v2n) / (m1 + m2);
         const v2nAfter = (v2n * (m2 - m1) + 2 * m1 * v1n) / (m1 + m2);
-        // Convert scalar normal and tangential velocities into vectors
         this.vx = v1nAfter * nx + v1t * tx;
         this.vy = v1nAfter * ny + v1t * ty;
         other.vx = v2nAfter * nx + v2t * tx;
         other.vy = v2nAfter * ny + v2t * ty;
-        // Separate overlapping balls
         const overlap = 0.5 * (this.radius + other.radius - distance + 1);
         this.x -= overlap * nx;
         this.y -= overlap * ny;
@@ -75,7 +68,6 @@ Ball.prototype.checkCollision = function(other) {
     }
 };
 
-// Allow user to control a ball
 let selectedBall = null;
 let controlledBall = null;
 

@@ -1,11 +1,10 @@
-// Falling Object Sandbox
 const canvas = document.getElementById('gravityCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = 1100;
 canvas.height = 500;
 
 let objects = [];
-let gravity = 10; // m/s², default
+let gravity = 10;
 
 function getSettings() {
     return {
@@ -63,10 +62,9 @@ function getRandomColor() {
 
 function updateObjects() {
     for (let obj of objects) {
-        obj.vy += gravity * 0.05; // simple gravity step
+        obj.vy += gravity * 0.05;
         obj.y += obj.vy;
         obj.x += obj.vx;
-        // Floor collision
         if (obj.type === 'ball') {
             if (obj.y + obj.r > canvas.height) {
                 obj.y = canvas.height - obj.r;

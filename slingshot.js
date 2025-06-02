@@ -1,11 +1,8 @@
 window.addEventListener('DOMContentLoaded', function () {
-    // Set up canvas
     const canvas = document.getElementById('slingshotCanvas');
     canvas.width = 1200;
     canvas.height = 600;
     
-    
-    // Create Matter.js engine and renderer
     const Engine = window.Matter.Engine,
         Render = window.Matter.Render,
         Runner = window.Matter.Runner,
@@ -20,7 +17,6 @@ window.addEventListener('DOMContentLoaded', function () {
     const engine = Engine.create();
     const world = engine.world;
 
-    // Use the existing canvas for rendering
     const render = Render.create({
         canvas: canvas,
         engine: engine,
@@ -32,17 +28,14 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Ground
     const ground = Bodies.rectangle(700, 400, 400, 20, { isStatic: true, render: { fillStyle: '#888' } });
 
-    // Slingshot ball
     let ball = Bodies.circle(200, 400, 20, {
         density: 0.004,
         restitution: 0.8,
         render: { fillStyle: '#ff45ff' }
     });
 
-    // Slingshot constraint
     const sling = Constraint.create({
         pointA: { x: 200, y: 400 },
         bodyB: ball,
@@ -53,7 +46,6 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Stack of shapes to knock down
     function getRandomColor() {
         const colors = ['#e63946', '#3a86ff', '#ffbe0b'];
         return colors[Math.floor(Math.random() * colors.length)];
@@ -65,7 +57,6 @@ window.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Mouse control
     const mouse = Mouse.create(render.canvas);
     const mouseConstraint = MouseConstraint.create(engine, {
         mouse: mouse,
@@ -76,10 +67,8 @@ window.addEventListener('DOMContentLoaded', function () {
     });
     render.mouse = mouse;
 
-    // Add all bodies and constraints to the world
     Composite.add(world, [ground, ball, sling, stack, mouseConstraint]);
 
-    // Ball reset logic
     let firing = false;
     Events.on(mouseConstraint, 'enddrag', function (e) {
         if (e.body === ball) firing = true;
@@ -97,7 +86,6 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Run engine and renderer
     Engine.run(engine);
     Render.run(render);
 });
